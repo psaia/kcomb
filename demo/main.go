@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"runtime"
 	"strings"
 	"text/template"
@@ -38,16 +41,24 @@ func main() {
 		col2 = append(col2, kcomb.Datum{Value: item})
 	}
 
-	done := make(chan struct{})
-	stream := compileTpl(done, kcomb.CombineGenerator(done, []kcomb.Set{col1, col2}))
-	i := 0
+	ctx, cancel := context.WithCancel(context.Background())
 
+	go func() {
+		scanner := bufio.NewScanner(os.Stdin)
+		for scanner.Scan() {
+			fmt.Println("canceling stream!")
+			cancel()
+		}
+	}()
+
+	stream := compileTpl(ctx.Done(), kcomb.CombineGenerator(ctx.Done(), []kcomb.Set{col1, col2}))
+	i := 0
 	for v := range stream {
 		log.Println(v)
 		if i%1000 == 0 {
 			printMemUsage()
 		}
-		time.Sleep(time.Millisecond * 10) // For effect.
+		time.Sleep(time.Millisecond * 1000) // For effect.
 		i++
 	}
 }
