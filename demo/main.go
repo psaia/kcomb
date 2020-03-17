@@ -47,7 +47,7 @@ func main() {
 		if i%1000 == 0 {
 			printMemUsage()
 		}
-		time.Sleep(time.Millisecond * 10)
+		time.Sleep(time.Millisecond * 10) // For effect.
 		i++
 	}
 }
