@@ -1,5 +1,7 @@
 # kcomb
 
+![Go](https://github.com/psaia/kcomb/workflows/Go/badge.svg)
+
 Compute (and stream/generate) every possible combination within N sets of data using an implementation of [n choose k](https://en.wikipedia.org/wiki/Binomial_coefficient).
 
 This could be useful when doing something like generating every possible template string given a set of 
