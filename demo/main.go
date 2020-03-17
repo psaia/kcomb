@@ -38,7 +38,7 @@ func main() {
 		col2 = append(col2, kcomb.Datum{Value: item})
 	}
 
-	done := make(chan interface{})
+	done := make(chan struct{})
 	stream := compileTpl(done, kcomb.CombineGenerator(done, []kcomb.Set{col1, col2}))
 	i := 0
 
@@ -54,7 +54,7 @@ func main() {
 
 // A simple data generator for compiling a template in the stream.
 func compileTpl(
-	done <-chan interface{},
+	done <-chan struct{},
 	valueStream <-chan kcomb.Set,
 ) <-chan string {
 	stream := make(chan string)

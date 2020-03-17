@@ -60,7 +60,7 @@ func TestCombineGenerator(t *testing.T) {
 	}
 
 	for idx, tc := range cases {
-		done := make(chan interface{})
+		done := make(chan struct{})
 		stream := CombineGenerator(done, tc.columns)
 
 		streamIdx := 0

@@ -53,7 +53,7 @@ func Combine(columns []Set) []Set {
 // CombineGenerator implements the same algorithm as Combine, except returns a stream to be
 // used in a pipeline. See demo for usage.
 func CombineGenerator(
-	done <-chan interface{},
+	done <-chan struct{},
 	columns []Set,
 ) <-chan Set {
 	n := len(columns)
