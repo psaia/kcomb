@@ -5,7 +5,7 @@ Compute (and stream/generate) every possible combination within N sets of data u
 This could be useful when doing something like generating every possible template string given a set of 
 values for each variable in the template. This works even when the number of variables per template is unknown.
 
-When working with larger sets, this can easily result in millions of results. The `CombineGenerator` func will allow you to create a pipeline and efficently iterate without eating much CPU or memory.
+When working with larger sets, this can be CPU intensive as results will be in the millions. The `CombineGenerator` func will allow you to create a pipeline and efficently iterate without eating much CPU or memory.
 
 See [tests](kcomb_test.go) and the [demo](demo/main.go) for usage and benchmarking.
 
