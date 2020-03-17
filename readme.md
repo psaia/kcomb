@@ -1,5 +1,7 @@
 # kcomb
 
+![data stream](demo/fruit.gif)
+
 kcomb implements a variation of [n choose k](https://en.wikipedia.org/wiki/Binomial_coefficient) in order
 to compute every possible distinct combination of values with respect to column (or set) of data belong to.
 

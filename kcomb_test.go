@@ -4,7 +4,75 @@ import (
 	"log"
 	"reflect"
 	"testing"
+	"time"
 )
+
+func TestCombineGenerator(t *testing.T) {
+	cases := []struct {
+		columns  []Set
+		expected []Set
+	}{
+		{
+			columns: []Set{
+				Set{Datum{"apple"}, Datum{"orange"}},
+				Set{Datum{"celery"}, Datum{"broccoli"}},
+			},
+			expected: []Set{
+				Set{Datum{"apple"}, Datum{"celery"}},
+				Set{Datum{"apple"}, Datum{"broccoli"}},
+				Set{Datum{"orange"}, Datum{"celery"}},
+				Set{Datum{"orange"}, Datum{"broccoli"}},
+			},
+		},
+		{
+			columns: []Set{
+				Set{Datum{1}, Datum{2}},
+				Set{Datum{3}, Datum{4}},
+			},
+			expected: []Set{
+				Set{Datum{1}, Datum{3}},
+				Set{Datum{1}, Datum{4}},
+				Set{Datum{2}, Datum{3}},
+				Set{Datum{2}, Datum{4}},
+			},
+		},
+		{
+			columns: []Set{
+				Set{Datum{1}, Datum{2}, Datum{3}},
+				Set{Datum{4}, Datum{5}, Datum{6}, Datum{7}},
+				Set{Datum{8}},
+			},
+			expected: []Set{
+				Set{Datum{1}, Datum{4}, Datum{8}},
+				Set{Datum{1}, Datum{5}, Datum{8}},
+				Set{Datum{1}, Datum{6}, Datum{8}},
+				Set{Datum{1}, Datum{7}, Datum{8}},
+				Set{Datum{2}, Datum{4}, Datum{8}},
+				Set{Datum{2}, Datum{5}, Datum{8}},
+				Set{Datum{2}, Datum{6}, Datum{8}},
+				Set{Datum{2}, Datum{7}, Datum{8}},
+				Set{Datum{3}, Datum{4}, Datum{8}},
+				Set{Datum{3}, Datum{5}, Datum{8}},
+				Set{Datum{3}, Datum{6}, Datum{8}},
+				Set{Datum{3}, Datum{7}, Datum{8}},
+			},
+		},
+	}
+
+	for idx, tc := range cases {
+		done := make(chan interface{})
+		stream := CombineGenerator(done, tc.columns)
+
+		streamIdx := 0
+		for v := range stream {
+			if reflect.DeepEqual(v, tc.expected[streamIdx]) == false {
+				t.Fatalf("Case Index: %d, Stream Index: %d - Expected '%v' to equal '%v'", idx, streamIdx, v, tc.expected[streamIdx])
+			}
+			time.Sleep(time.Nanosecond)
+			streamIdx++
+		}
+	}
+}
 
 func TestCombine(t *testing.T) {
 	cases := []struct {
