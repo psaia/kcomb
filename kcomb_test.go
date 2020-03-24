@@ -4,7 +4,6 @@ import (
 	"log"
 	"reflect"
 	"testing"
-	"time"
 )
 
 func TestCombineGenerator(t *testing.T) {
@@ -68,7 +67,6 @@ func TestCombineGenerator(t *testing.T) {
 			if reflect.DeepEqual(v, tc.expected[streamIdx]) == false {
 				t.Fatalf("Case Index: %d, Stream Index: %d - Expected '%v' to equal '%v'", idx, streamIdx, v, tc.expected[streamIdx])
 			}
-			time.Sleep(time.Nanosecond)
 			streamIdx++
 		}
 	}
@@ -128,7 +126,7 @@ func TestCombine(t *testing.T) {
 
 	for idx, tc := range cases {
 		r := Combine(tc.columns)
-		t.Logf("Index: %d - Created %d permutations", idx, len(r))
+		t.Logf("Index: %d - Created %d combinations", idx, len(r))
 		if reflect.DeepEqual(r, tc.expected) == false {
 			t.Fatalf("Index: %d - Expected '%v' to equal '%v'", idx, r, tc.expected)
 		}
@@ -169,5 +167,5 @@ func benchmarkCombine(n int, b *testing.B) {
 		col3[i] = Datum{i}
 	}
 
-	log.Printf("created %d permutations", len(Combine([]Set{col1, col2, col3})))
+	log.Printf("created %d combinations", len(Combine([]Set{col1, col2, col3})))
 }

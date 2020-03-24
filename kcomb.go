@@ -21,17 +21,27 @@ type Set []Datum
 //              ]
 func Combine(columns []Set) []Set {
 	n := len(columns)
+	sliceSize := 100
+	idx := 0
 	indices := make([]int, n)
-	combset := make([]Set, 0)
+	combset := make([]Set, sliceSize)
 
 	for {
-		var comb Set
+		comb := make(Set, n)
 
 		for i := 0; i < n; i++ {
-			comb = append(comb, columns[i][indices[i]])
+			comb[i] = columns[i][indices[i]]
 		}
 
-		combset = append(combset, comb)
+		c := cap(combset)
+		if idx > c-1 {
+			newCombset := make([]Set, c*2)
+			copy(newCombset, combset)
+			combset = newCombset
+		}
+
+		combset[idx] = comb
+		idx++
 		next := n - 1
 
 		for next >= 0 && (indices[next]+1 >= len(columns[next])) {
@@ -39,7 +49,7 @@ func Combine(columns []Set) []Set {
 		}
 
 		if next < 0 {
-			return combset
+			return combset[0:idx]
 		}
 
 		indices[next]++
@@ -56,8 +66,8 @@ func CombineGenerator(
 	done <-chan struct{},
 	columns []Set,
 ) <-chan Set {
-	n := len(columns)
 	stream := make(chan Set, 1)
+	n := len(columns)
 	indices := make([]int, n)
 
 	go func() {
@@ -67,10 +77,10 @@ func CombineGenerator(
 			case <-done:
 				return
 			default:
-				var comb Set
+				comb := make(Set, n)
 
 				for i := 0; i < n; i++ {
-					comb = append(comb, columns[i][indices[i]])
+					comb[i] = columns[i][indices[i]]
 				}
 
 				stream <- comb
@@ -92,6 +102,5 @@ func CombineGenerator(
 			}
 		}
 	}()
-
 	return stream
 }
